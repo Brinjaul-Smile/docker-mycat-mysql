@@ -1,0 +1,136 @@
+version: '3'
+services:
+  mysql-master1:
+    restart: always
+    image: mysql:5.7
+    container_name: mysql-master1
+    env_file: .env
+    ports:
+      - 3307:3306
+    environment:
+      TZ: Asia/Shanghai
+      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
+    volumes:
+      - ./conf/mysql_master1/mysql.cnf:/etc/mysql/conf.d/mysql.cnf:ro
+      - ./data/mysql_master1/:/var/lib/mysql/:rw
+      - ./log/mysql_master1/:/var/log/mysql/:rw
+    networks:
+      mycat-mysql:
+        ipv4_address: 172.101.0.2
+
+  mysql-slave1:
+    restart: always
+    image: mysql:5.7
+    container_name: mysql-slave1
+    env_file: .env
+    ports:
+      - 3308:3306
+    environment:
+      TZ: Asia/Shanghai
+      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
+    volumes:
+      - ./conf/mysql_slave1/mysql.cnf:/etc/mysql/conf.d/mysql.cnf:ro
+      - ./data/mysql_slave1/:/var/lib/mysql/:rw
+      - ./log/mysql_slave1/:/var/log/mysql/:rw
+    networks:
+      mycat-mysql:
+        ipv4_address: 172.101.0.3
+
+  mysql-slave2:
+    restart: always
+    image: mysql:5.7
+    container_name: mysql-slave2
+    env_file: .env
+    ports:
+      - 3309:3306
+    environment:
+      TZ: Asia/Shanghai
+      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
+    volumes:
+      - ./conf/mysql_slave2/mysql.cnf:/etc/mysql/conf.d/mysql.cnf:ro
+      - ./data/mysql_slave2/:/var/lib/mysql/:rw
+      - ./log/mysql_slave2/:/var/log/mysql/:rw
+    networks:
+      mycat-mysql:
+        ipv4_address: 172.101.0.4
+
+  mysql-master2:
+    restart: always
+    image: mysql:5.7
+    container_name: mysql-master2
+    env_file: .env
+    ports:
+      - 3310:3306
+    environment:
+      TZ: Asia/Shanghai
+      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
+    volumes:
+      - ./conf/mysql_master2/mysql.cnf:/etc/mysql/conf.d/mysql.cnf:ro
+      - ./data/mysql_master2/:/var/lib/mysql/:rw
+      - ./log/mysql_master2/:/var/log/mysql/:rw
+    networks:
+      mycat-mysql:
+        ipv4_address: 172.101.0.5
+
+  mysql-slave3:
+    restart: always
+    image: mysql:5.7
+    container_name: mysql-slave3
+    env_file: .env
+    ports:
+      - 3311:3306
+    environment:
+      TZ: Asia/Shanghai
+      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
+    volumes:
+      - ./conf/mysql_slave3/mysql.cnf:/etc/mysql/conf.d/mysql.cnf:ro
+      - ./data/mysql_slave3/:/var/lib/mysql/:rw
+      - ./log/mysql_slave3/:/var/log/mysql/:rw
+    networks:
+      mycat-mysql:
+        ipv4_address: 172.101.0.6
+
+  mysql-slave4:
+    restart: always
+    image: mysql:5.7
+    container_name: mysql-slave4
+    env_file: .env
+    ports:
+      - 3312:3306
+    environment:
+      TZ: Asia/Shanghai
+      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
+    volumes:
+      - ./conf/mysql_slave4/mysql.cnf:/etc/mysql/conf.d/mysql.cnf:ro
+      - ./data/mysql_slave4/:/var/lib/mysql/:rw
+      - ./log/mysql_slave4/:/var/log/mysql/:rw
+    networks:
+      mycat-mysql:
+        ipv4_address: 172.101.0.7
+
+  mycat1:
+    build: .
+    container_name: mycat1
+    volumes:
+      - ./conf/mycat1/mycat/:/mycat/conf/:ro
+      - ./log/mycat1/:/mycat/logs/:rw
+      #- /etc/localtime:/etc/localtime:ro
+      - ./conf/mycat1/hosts:/etc/hosts:ro
+    ports:
+      - "8067:8066"
+      - "9067:9066"
+    ulimits:
+      nproc: 65535
+    hostname: mycat
+#    mem_limit: 1024m
+    restart: always
+    networks:
+      mycat-mysql:
+        ipv4_address: 172.101.0.23
+
+networks:
+  mycat-mysql:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: "172.101.0.0/99"

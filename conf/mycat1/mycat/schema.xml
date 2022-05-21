@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!DOCTYPE mycat:schema SYSTEM "schema.dtd">
+<mycat:schema xmlns:mycat="http://io.mycat/">
+        <schema name="db_order" checkSQLschema="false" sqlMaxLimit="100">
+                <!-- 新增分片节点dn2 -->
+                <table name="tb_order" primaryKey="id" autoIncrement="true" dataNode="dn1,dn2" rule="mod-long"/> 
+				<table name="MYCAT_SEQUENCE" primaryKey="NAME" dataNode="dn1"/>
+        </schema>
+        <dataNode name="dn1" dataHost="cluster1" database="db_order" />
+        <!-- 新增的分片 -->
+        <dataNode name="dn2" dataHost="cluster2" database="db_order" />
+
+        <dataHost name="cluster1" maxCon="1000" minCon="10" balance="3" writeType="0" dbType="mysql" dbDriver="native" switchType="1"  slaveThreshold="100">
+                <heartbeat>select user()</heartbeat>
+                <writeHost host="w1" url="172.101.0.2:3306" user="root" password="123456">
+            <readHost host="w1r1" url="172.101.0.3:3306" user="root" password="123456" />
+            <readHost host="w1r2" url="172.101.0.4:3306" user="root" password="123456" />
+                </writeHost>
+
+        </dataHost>
+        
+        <!-- 新增的配置连接信息 -->
+        <dataHost name="cluster2" maxCon="1000" minCon="10" balance="3" writeType="0" dbType="mysql" dbDriver="native" switchType="1"  slaveThreshold="100">
+                <heartbeat>select user()</heartbeat>
+                <writeHost host="w2" url="172.101.0.5:3306" user="root" password="123456">
+            <readHost host="w2r1" url="172.101.0.6:3306" user="root" password="123456" />
+            <readHost host="w2r2" url="172.101.0.7:3306" user="root" password="123456" />
+                </writeHost>
+
+        </dataHost>
+</mycat:schema>
