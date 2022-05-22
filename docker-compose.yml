@@ -133,4 +133,4 @@ networks:
     driver: bridge
     ipam:
       config:
-        - subnet: "172.101.0.0/99"
+        - subnet: "172.101.0.0/24"
